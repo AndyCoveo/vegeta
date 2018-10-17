@@ -3,12 +3,14 @@
 package vegeta
 
 import (
+	"bytes"
 	json "encoding/json"
+	http "net/http"
+	time "time"
+
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
-	http "net/http"
-	time "time"
 )
 
 // suppress unused package warning
@@ -126,6 +128,23 @@ func easyjsonBd1621b8EncodeGithubComTsenartVegetaV12Lib(out *jwriter.Writer, in 
 		const prefix string = ",\"attack\":"
 		out.RawString(prefix[1:])
 		out.String(string(in.Attack))
+	}
+	{
+		var jw jwriter.Writer
+		(*jsonTarget)(&in.Target).encode(&jw)
+		if jw.Error == nil {
+			const prefix string = ",\"target\":"
+			if first {
+				first = false
+				out.RawString(prefix[1:])
+			} else {
+				out.RawString(prefix)
+			}
+			buf := new(bytes.Buffer)
+
+			jw.DumpTo(buf)
+			out.String(buf.String())
+		}
 	}
 	{
 		const prefix string = ",\"seq\":"
