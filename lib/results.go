@@ -30,6 +30,7 @@ type Result struct {
 	BytesIn   uint64        `json:"bytes_in"`
 	Error     string        `json:"error"`
 	Body      []byte        `json:"body"`
+	Target    Target        `json:"target"`
 }
 
 // End returns the time at which a Result ended.

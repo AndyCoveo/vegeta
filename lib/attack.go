@@ -69,8 +69,8 @@ func NewAttacker(opts ...func(*Attacker)) *Attacker {
 
 	a.client = http.Client{
 		Transport: &http.Transport{
-			Proxy:                 http.ProxyFromEnvironment,
-			Dial:                  a.dialer.Dial,
+			Proxy: http.ProxyFromEnvironment,
+			Dial:  a.dialer.Dial,
 			ResponseHeaderTimeout: DefaultTimeout,
 			TLSClientConfig:       DefaultTLSConfig,
 			TLSHandshakeTimeout:   10 * time.Second,
@@ -300,6 +300,8 @@ func (a *Attacker) hit(tr Targeter, name string) *Result {
 		a.Stop()
 		return &res
 	}
+
+	res.Target = tgt
 
 	req, err := tgt.Request()
 	if err != nil {

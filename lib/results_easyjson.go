@@ -3,6 +3,7 @@
 package vegeta
 
 import (
+	"bytes"
 	"time"
 
 	"github.com/mailru/easyjson/jlexer"
@@ -79,6 +80,23 @@ func (in jsonResult) encode(out *jwriter.Writer) {
 			out.RawString(prefix)
 		}
 		out.String(string(in.Attack))
+	}
+	{
+		var jw jwriter.Writer
+		(*jsonTarget)(&in.Target).encode(&jw)
+		if jw.Error == nil {
+			const prefix string = ",\"target\":"
+			if first {
+				first = false
+				out.RawString(prefix[1:])
+			} else {
+				out.RawString(prefix)
+			}
+			buf := new(bytes.Buffer)
+
+			jw.DumpTo(buf)
+			out.String(buf.String())
+		}
 	}
 	{
 		const prefix string = ",\"seq\":"
